@@ -2,8 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Task;
-use App\Models\User;
+use App\Models\{Task, User};
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
@@ -12,8 +11,7 @@ class TaskPolicy
 
     public function create(User $user): bool
     {
-        // TODO only self board
-        return true;
+        return $user->boards()->where('id', request('board_id'))->exists();
     }
 
     public function update(User $user, Task $task): bool

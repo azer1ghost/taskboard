@@ -2,8 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Board;
-use App\Models\User;
+use App\Models\{Board, User};
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BoardPolicy
@@ -22,7 +21,7 @@ class BoardPolicy
 
     public function update(User $user, Board $board): bool
     {
-        return true;// $board->getAttribute('user_id') === $user->getAttribute('id');
+        return $board->getAttribute('user_id') === $user->getAttribute('id');
     }
 
     public function delete(User $user, Board $board): bool
