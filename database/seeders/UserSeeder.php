@@ -15,10 +15,8 @@ class UserSeeder extends Seeder
                 Board::factory(4)->hasTasks(2)
             )
             ->create([
-                'email' => 'mamedovazer124@gmail.com',
-                'password' => Hash::make('4145124Azer')
-//                'email' => 'user@gmail.com',
-//                'password' => Hash::make('password')
+                'email' => 'user@gmail.com',
+                'password' => Hash::make('password')
             ]);
     }
 }
