@@ -1,7 +1,7 @@
 require('./bootstrap');
 
-import { createApp } from 'vue'
-import { store } from './store'
+import {createApp} from 'vue'
+import {store} from './store'
 import App from './components/App.vue';
 
 const app = createApp(App)
