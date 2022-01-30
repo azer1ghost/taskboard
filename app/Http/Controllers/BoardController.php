@@ -6,6 +6,7 @@ use App\Http\Requests\BoardRequest;
 use App\Jobs\RefreshIterateBoards;
 use Illuminate\Http\JsonResponse;
 use App\Models\Board;
+use Exception;
 
 class BoardController extends Controller
 {
@@ -17,42 +18,50 @@ class BoardController extends Controller
 
     public function index(): JsonResponse
     {
-         $boards = auth()->user()
+        try {
+            return response()->json(
+                auth()->user()
                 ->boards()
                 ->with('tasks')
                 ->orderBy('order')
-                ->get(['id', 'title', 'order']);
-
-         return response()->json($boards);
+                ->get(['id', 'title', 'order'])
+            );
+        } catch (Exception $e) {
+            return response()->json($e, 202);
+        }
     }
 
     public function store(BoardRequest $request): JsonResponse
     {
-        $board = $request->user()->boards()->create($request->validated());
-
-        $this->dispatch(new RefreshIterateBoards($board));
-
-        return response()->json($board->load('tasks'), 201);
+        try {
+            $board = $request->user()->boards()->create($request->validated());
+            $this->dispatch(new RefreshIterateBoards($board, 1));
+            return response()->json($board->load('tasks'), 201);
+        } catch (Exception $e) {
+            return response()->json($e, 202);
+        }
     }
 
     public function update(Board $board, BoardRequest $request): JsonResponse
     {
-        $board->update($request->validated());
+        try {
+            $oldOrder = $board->getAttribute('order');
+            $board->update($request->validated());
+            $this->dispatch(new RefreshIterateBoards($board, $oldOrder));
+            return response()->json($board);
+        } catch (Exception $e) {
+            return response()->json($e, 202);
+        }
 
-        $this->dispatch(new RefreshIterateBoards($board));
-
-        return response()->json($board);
     }
 
     public function destroy(Board $board)
     {
-        $board->delete();
-
-        return response('OK');
+        try {
+            $board->delete();
+            return response('OK');
+        } catch (Exception $e) {
+            return response()->json($e, 202);
+        }
     }
 }
-
-
-//        if ($board->isDirty('order')){
-//        }
-//        $board->save();

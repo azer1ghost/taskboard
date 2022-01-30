@@ -12,11 +12,12 @@ class RefreshIterateBoards
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $board;
+    protected $board, $oldOrder;
 
-    public function __construct(Board $board)
+    public function __construct(Board $board, int $oldOrder)
     {
         $this->board = $board->withoutRelations();
+        $this->oldOrder = $oldOrder;
     }
 
     public function handle()
@@ -31,13 +32,16 @@ class RefreshIterateBoards
         $increase = $this->board->order;
 
         foreach ($boards as $board) {
-            if ($board->order >= $this->board->order)
-            {
+            if ($board->order <= $this->board->order && $this->board->order > $this->oldOrder) {
+                $board->decrement('order');
+            }
+            elseif ($board->order >= $this->board->order) {
                 $increase++;
-
                 $board->update(['order' => $increase]);
             }
         }
-
     }
 }
+
+
+

@@ -33,23 +33,5 @@ class Task extends Model
 
             $task->setAttribute('order', $order + 1);
         });
-
-        static::updated(function ($task)
-        {
-            // get all other tasks greater than this and re-iterate them
-            $tasks = self::query()
-                ->where('id', '!=', $task->getAttribute('id'))
-                ->where('board_id', $task->getAttribute('board_id'))
-                ->where('order', '>=', $task->getAttribute('order'))
-                ->orderBy('order')
-                ->get();
-
-                $increase = $task->getAttribute('order');
-
-                foreach ($tasks as $singleTask) {
-                    $increase++;
-                    $singleTask->update(['order' => $increase]);
-                };
-        });
     }
 }

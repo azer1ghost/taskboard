@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
+use App\Jobs\RefreshIterateTasks;
+use Illuminate\Http\JsonResponse;
 use App\Models\Task;
 use Exception;
-use Illuminate\Http\JsonResponse;
 
 class TaskController extends Controller
 {
@@ -18,18 +19,23 @@ class TaskController extends Controller
     public function store(TaskRequest $request): JsonResponse
     {
         try {
-            return response()->json(Task::create($request->validated()), 201);
+            $task = Task::create($request->validated());
+            $this->dispatch(new RefreshIterateTasks($task));
+            return response()->json($task, 201);
         } catch (Exception $e) {
-            dd($e);
+            return response()->json($e, 202);
         }
     }
 
     public function update(Task $task, TaskRequest $request): JsonResponse
     {
         try {
-            return response()->json($task->update($request->validated()));
+            $oldOrder = $task->getAttribute('order');
+            $task->update($request->validated());
+            $this->dispatch(new RefreshIterateTasks($task, $oldOrder));
+            return response()->json($task);
         } catch (Exception $e) {
-            dd($e);
+            return response()->json($e, 202);
         }
     }
 
@@ -39,7 +45,7 @@ class TaskController extends Controller
             $task->delete();
             return response('OK');
         } catch (Exception $e) {
-            dd($e);
+            return response()->json($e, 202);
         }
     }
 }
