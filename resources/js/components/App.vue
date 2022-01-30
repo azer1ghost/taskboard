@@ -9,7 +9,7 @@
                 </h2>
             </div>
             <div class="col-3">
-                <button class="btn btn-outline-success float-end" @click="createBoard">Add Board</button>
+                <button v-show="boards.length"  class="btn btn-outline-success float-end" @click="createBoard">Add Board</button>
             </div>
             <div v-show="loading" class="col-12 text-center text-muted">
                 <h4>Fetching data <i class="fa fa-spin fa-spinner"></i></h4>
@@ -27,11 +27,16 @@
             orientation="horizontal"
             tag="div"
             @drop="onBoardDrop($event)">
-            <Draggable v-for="board  in boards" :key="board.id" class="col-12 col-sm-6 col-md-4 col-xl-3 mt-5 mt-md-0"
+            <Draggable v-for="board in boards" :key="board.id" class="col-12 col-sm-6 col-md-4 col-xl-3 mt-5 mt-md-0"
                        tag="div">
                 <board :board="board"/>
             </Draggable>
         </Container>
+        <div v-show="!boards.length" class="col-12 my-5">
+            <div class="alert alert-info text-center" role="alert">
+                No any board available. <button class="mx-2 btn btn-outline-success" @click="createBoard">Add one</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -72,7 +77,7 @@ export default {
 </script>
 
 <style>
-.smooth-dnd-container.horizontal {
-    display: flex !important;
-}
+    .smooth-dnd-container.horizontal {
+        display: flex !important;
+    }
 </style>

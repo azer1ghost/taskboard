@@ -1,9 +1,6 @@
 <template>
     <div class="card m-1 m-xl-3 stage">
         <h5 class="mx-3 mt-3 text-muted">
-            <label v-show="!showField('title')"
-                   :for="'board_title' + board.id"
-                   @click="focusField('title')" v-text="board.title"/>
             <input v-show="showField('title')"
                    :id="'board_title' + board.id"
                    v-model="board.title"
@@ -11,13 +8,16 @@
                    type="text"
                    @blur="blurField"
                    @focus="focusField('title')">
-            <span v-show="!showField('title')" class="badge p-1 m-2" v-text="board.tasks.length"/>
-            <button class="float-end btn btn-outline-danger btn-circle" @click="destroy">
-                <i class="fal fa-trash"></i>
-            </button>
-            <button class="float-end btn btn-outline-primary btn-circle mx-2" @click="createTask(board)">
-                <i class="fal fa-plus"></i>
-            </button>
+            <div v-show="!showField('title')">
+                <label :for="'board_title' + board.id" @click="focusField('title')" v-text="board.title"/>
+                <span  class="badge p-1 m-2" v-text="board.tasks.length"/>
+                <button class="float-end btn btn-outline-danger btn-circle" @click="destroy">
+                    <i class="fal fa-trash"></i>
+                </button>
+                <button class="float-end btn btn-outline-primary btn-circle mx-2" @click="createTask(board)">
+                    <i class="fal fa-plus"></i>
+                </button>
+            </div>
         </h5>
         <div class="card-body pt-0 task-container">
             <Container :get-child-payload="getTaskPayload(board.id)" group-name="tasks"

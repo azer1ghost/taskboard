@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BoardRequest;
+use App\Jobs\RefreshIterateBoards;
 use Illuminate\Http\JsonResponse;
 use App\Models\Board;
 
@@ -29,12 +30,16 @@ class BoardController extends Controller
     {
         $board = $request->user()->boards()->create($request->validated());
 
+        $this->dispatch(new RefreshIterateBoards($board));
+
         return response()->json($board->load('tasks'), 201);
     }
 
     public function update(Board $board, BoardRequest $request): JsonResponse
     {
         $board->update($request->validated());
+
+        $this->dispatch(new RefreshIterateBoards($board));
 
         return response()->json($board);
     }
@@ -46,3 +51,8 @@ class BoardController extends Controller
         return response('OK');
     }
 }
+
+
+//        if ($board->isDirty('order')){
+//        }
+//        $board->save();

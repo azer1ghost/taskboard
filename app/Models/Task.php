@@ -36,8 +36,6 @@ class Task extends Model
 
         static::updated(function ($task)
         {
-            //TODO: iterate only 'board_id' or 'order' columns was updated
-
             // get all other tasks greater than this and re-iterate them
             $tasks = self::query()
                 ->where('id', '!=', $task->getAttribute('id'))
@@ -46,11 +44,11 @@ class Task extends Model
                 ->orderBy('order')
                 ->get();
 
-                $iterate = $task->getAttribute('order');
+                $increase = $task->getAttribute('order');
 
                 foreach ($tasks as $singleTask) {
-                    $iterate++;
-                    $singleTask->update(['order' => $iterate]);
+                    $increase++;
+                    $singleTask->update(['order' => $increase]);
                 };
         });
     }
