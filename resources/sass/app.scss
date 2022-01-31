@@ -85,3 +85,18 @@ body {
     border: 0;
     color: rgb(85, 80, 244);
 }
+
+.task-item{
+    .toolbar {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.1s linear;
+    }
+    &:hover {
+        .toolbar {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}
+

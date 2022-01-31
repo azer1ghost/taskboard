@@ -1,6 +1,6 @@
 <template>
     <div class="shadow-sm p-2 my-3 bg-body rounded m-0 task-item">
-        <div class="float-end" v-show="!showField('title')">
+        <div class="float-end toolbar" v-show="!showField('title')">
             <i class="fal fa-trash-alt task-edit-btn text-danger me-2" @click="destroy"></i>
             <label :for="'task_detail' + task.id" @click="focusField('detail')">
                 <i class="fal fa-pencil task-edit-btn"></i>
