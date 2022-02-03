@@ -25,6 +25,6 @@ class CreateBoardsTable extends Migration
             $table->dropConstrainedForeignId('user_id');
             $table->dropColumn('user_id');
         });
-        Schema::dropIfExists('stages');
+        Schema::dropIfExists('boards');
     }
 }
